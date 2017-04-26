@@ -85,18 +85,17 @@ function Nyx.AutoSteal()
 end
 
 function Nyx.FindTarget(me, item)
-	
-	local entities = Heroes.GetAll()
-	for index, ent in pairs(entities) do
-		local enemyhero = Heroes.Get(index)
-		if not Entity.IsSameTeam(me, enemyhero) and not NPC.IsLinkensProtected(enemyhero) and not NPC.IsIllusion(enemyhero) and NPC.IsEntityInRange(me, enemyhero, Ability.GetCastRange(item) + NPC.GetCastRangeBonus(me)) then
-		    --Log.Write(Hero.GetIntellectTotal(enemyhero))
-		    local dagondmg = Ability.GetLevelSpecialValueForFloat(item, "float_multiplier")*Hero.GetIntellectTotal(enemyhero) + Ability.GetLevelSpecialValueForFloat(item, "float_multiplier")*Hero.GetIntellectTotal(enemyhero) * (Hero.GetIntellectTotal(me) / 16 / 100)
-			local totaldmg = (1 - NPC.GetMagicalArmorValue(enemyhero)) * dagondmg
-			local isValid = Nyx.CheckForModifiers(enemyhero)
-			if Entity.GetHealth(enemyhero) < totaldmg and isValid then return enemyhero end
-		end
-	end
+    for k, enemyhero in pairs(NPC.GetHeroesInRadius(me, Ability.GetCastRange(item) + NPC.GetCastRangeBonus(me), Enum.TeamType.TEAM_ENEMY)) do
+        if not NPC.IsLinkensProtected(enemyhero)
+            and not NPC.IsIllusion(enemyhero)
+            and NPC.IsEntityInRange(me, enemyhero, Ability.GetCastRange(item) + NPC.GetCastRangeBonus(me))
+        then
+            local dagondmg = Ability.GetLevelSpecialValueForFloat(item, "float_multiplier")*Hero.GetIntellectTotal(enemyhero) + Ability.GetLevelSpecialValueForFloat(item, "float_multiplier")*Hero.GetIntellectTotal(enemyhero) * (Hero.GetIntellectTotal(me) / 16 / 100)
+            local totaldmg = (1 - NPC.GetMagicalArmorValue(enemyhero)) * dagondmg
+            local isValid = Nyx.CheckForModifiers(enemyhero)
+            if Entity.GetHealth(enemyhero) < totaldmg and isValid then return enemyhero end
+        end
+    end
 end
 	
 function Nyx.CheckForModifiers(target)
