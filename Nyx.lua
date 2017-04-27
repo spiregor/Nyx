@@ -92,8 +92,9 @@ function Nyx.FindTarget(me, item)
         then
             local dagondmg = Ability.GetLevelSpecialValueForFloat(item, "float_multiplier")*Hero.GetIntellectTotal(enemyhero) + Ability.GetLevelSpecialValueForFloat(item, "float_multiplier")*Hero.GetIntellectTotal(enemyhero) * (Hero.GetIntellectTotal(me) / 16 / 100)
             local totaldmg = (1 - NPC.GetMagicalArmorValue(enemyhero)) * dagondmg
+			Log.Write(totaldmg)
             local isValid = Nyx.CheckForModifiers(enemyhero)
-            if Entity.GetHealth(enemyhero) < totaldmg and isValid then return enemyhero end
+            if Entity.GetHealth(enemyhero) < totaldmg and NPC.GetMana(enemyhero) >= totaldmg and isValid then return enemyhero end
         end
     end
 end
